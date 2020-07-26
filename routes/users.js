@@ -17,7 +17,7 @@ router.get("/", (req, res, next) => {
   });
 });
 
-router.post("/addUser", (req, res) => {
+router.post("/addUser", async (req, res) => {
   let userDetails = new UserModel({
     name: req.body.name,
     age: req.body.age
@@ -25,13 +25,19 @@ router.post("/addUser", (req, res) => {
   // userDetails.name = req.name;
   // userDetails.age = req.age;
 
-  userDetails.save((err, doc) => {
-    if (err) {
-      res.json({ error: err });
-    } else {
-      res.json({ success: true, message: "User Added" });
-    }
-  });
+  const doesUserExist = UserModel.exists({ name: req.body.name });
+
+  if (doesUserExist) {
+    res.json({ error: "User already exists" });
+  } else {
+    userDetails.save((err, doc) => {
+      if (err) {
+        res.json({ error: err });
+      } else {
+        res.json({ success: true, message: "User Added" });
+      }
+    });
+  }
 });
 
 module.exports = router;
