@@ -3,6 +3,7 @@ var router = express.Router();
 var ObjectID = require("mongodb").ObjectID;
 const sha256 = require("js-sha256").sha256;
 const secretKeyN = require("../config/secret").secretKey;
+const jwt = require("jsonwebtoken");
 
 const mongoose = require("mongoose");
 
@@ -58,9 +59,13 @@ router.post("/login", async (req, res) => {
   });
 
   if (doesUserExist) {
-    res.json({ error: "Login successfull" });
+    const tokenOfLogin = jwt.sign({ username: req.body.name }, secretKeyN, {
+      expiresIn: "365y"
+    });
+
+    res.json({ message: "Login successfull", token: tokenOfLogin });
   } else {
-    res.json({ error: "User doesnt exist" });
+    res.json({ error: "User doesnt exist", token: null });
   }
 });
 
@@ -71,6 +76,37 @@ router.get("/updateExistingUsersWithPassword", async (req, res) => {
   );
 
   console.log(resultOfUpdate, "result of update for pass");
+});
+
+router.get("/getUserDetails/:name", async (req, res) => {
+  let nameAsked = req.params.name;
+
+  let findUser = UserModel.findOne({ name: nameAsked }, (err, obj) => {
+    if (err) {
+      res.json({
+        success: false,
+        message: "No user exists"
+      });
+    } else {
+      // res.json({
+      //   success:true,
+      //   message:'user exists',token:
+      // })
+      if (obj) {
+        console.log(obj, "found the user");
+        res.json({
+          success: true,
+          message: "user exists",
+          age: obj.age
+        });
+      } else {
+        res.json({
+          success: false,
+          message: "No user exists"
+        });
+      }
+    }
+  });
 });
 
 module.exports = router;
