@@ -11,4 +11,12 @@ const UserSchema = new mongoose.Schema({
   }
 });
 
-mongoose.model("Users", UserSchema);
+const UpdateUserSchema = new mongoose.Schema();
+
+UpdateUserSchema.add(UserSchema).add({
+  password: {
+    type: String
+  }
+});
+
+mongoose.model("Users", UpdateUserSchema);
