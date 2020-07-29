@@ -11,11 +11,11 @@ let UserModel = mongoose.model("Users");
 
 /* GET Users page. */
 router.get("/", (req, res, next) => {
-  UserModel.find((err, docs) => {
+  UserModel.find({}, (err, docs) => {
     if (!err) {
-      res.json({ "COurses found": 3 });
+      res.json({ users: docs });
     } else {
-      res.send("Error COurses");
+      res.json({ error: "no users found" });
     }
   });
 });
