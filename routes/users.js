@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 
 let UserModel = mongoose.model("Users");
+let uploadFile = require("../database/index").uploadFile;
 
 /* GET Users page. */
 router.get("/", (req, res, next) => {
@@ -107,6 +108,11 @@ router.get("/getUserDetails/:name", async (req, res) => {
       }
     }
   });
+});
+
+router.post("/uploadFile", uploadFile.single("file"), async (req, res) => {
+  // res.json({ file: req.file });
+  res.json({ success: true });
 });
 
 module.exports = router;
