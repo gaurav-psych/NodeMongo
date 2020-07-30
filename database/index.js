@@ -44,6 +44,19 @@ const fileStorage = new GridFsStorage({
     });
   }
 });
+
+const uploadFilesLocal = multer.diskStorage({
+  destination: function(req, file, cb) {
+    console.log(file.fieldname, "filenae");
+    cb(null, "uploads/");
+  },
+  filename: function(req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  }
+});
+
+const uploadToLocal = multer({ storage: uploadFilesLocal });
+
 const upload = multer({ storage: fileStorage });
 
 const findFile = async (req, res, fileNameCame) => {
@@ -68,5 +81,6 @@ const Users = require("./users.model");
 
 module.exports = {
   uploadFile: upload,
-  findFile: findFile
+  findFile: findFile,
+  uploadToLocal: uploadToLocal
 };

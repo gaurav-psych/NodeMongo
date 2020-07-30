@@ -10,6 +10,7 @@ const mongoose = require("mongoose");
 let UserModel = mongoose.model("Users");
 let uploadFile = require("../database/index").uploadFile;
 let findFile = require("../database/index").findFile;
+let uploadFileToLocal = require("../database/index").uploadToLocal;
 
 /* GET Users page. */
 router.get("/", (req, res, next) => {
@@ -115,6 +116,15 @@ router.post("/uploadFile", uploadFile.single("file"), async (req, res) => {
   // this has your file name and other properties
   res.json({ file: req.file });
 });
+
+router.post(
+  "/uploadFileToLocal",
+  uploadFileToLocal.single("file"),
+  async (req, res) => {
+    // this has your file name and other properties
+    res.json({ file: req.file });
+  }
+);
 
 router.get("/getFile/:filename", async (req, res) => {
   let fileNameCame = req.params.filename;
