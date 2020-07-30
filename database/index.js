@@ -46,8 +46,27 @@ const fileStorage = new GridFsStorage({
 });
 const upload = multer({ storage: fileStorage });
 
+const findFile = async (req, res, fileNameCame) => {
+  gfs.files.findOne({ filename: fileNameCame }, (err, file) => {
+    // Check if file
+    if (!file || file.length === 0) {
+      return res.status(404).json({
+        err: "No file exists"
+      });
+    }
+    // File exists and to download the file
+    let readstream = gfs.createReadStream({
+      filename: fileNameCame
+    });
+    readstream.pipe(res);
+    // brlow can be share dofr json version of file
+    // return res.json(file);
+  });
+};
+
 const Users = require("./users.model");
 
 module.exports = {
-  uploadFile: upload
+  uploadFile: upload,
+  findFile: findFile
 };
