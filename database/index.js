@@ -78,6 +78,7 @@ const findFile = async (req, res, fileNameCame) => {
 };
 
 const Users = require("./users.model");
+const Rotaract = require("./rotaract.model");
 
 module.exports = {
   uploadFile: upload,

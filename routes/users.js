@@ -23,6 +23,31 @@ router.get("/", (req, res, next) => {
   });
 });
 
+/* GET Users pageby stream. */
+router.get("/getUsersByStream", (req, res, next) => {
+  let respArr = [];
+
+  let stream = UserModel.find().stream();
+  stream.on("data", function(doc) {
+    respArr.push(doc);
+  });
+  stream.on("error", function(err) {
+    res.json({
+      success: false,
+      message: err
+    });
+  });
+  stream.on("end", function() {
+    res.json({
+      success: true,
+      payload: {
+        // duration: duration,
+        message: respArr
+      }
+    });
+  });
+});
+
 router.post("/addUser", async (req, res) => {
   const password = req.body.password;
   const hashPass = sha256.hmac(secretKeyN, password);
